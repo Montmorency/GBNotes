@@ -1,0 +1,676 @@
+\documentclass{article}
+\usepackage[utf8x]{inputenc}
+\usepackage{default}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage[sort&compress]{natbib}
+\usepackage[a4paper,total={6in,9in}]{geometry}
+
+\def\wp{\omega^\prime}
+\def\w{\omega}
+\def\wc{{\omega_{\rm C}}}
+\def\ket{\rangle}
+\def\bra{\langle}
+\def\H{\hat{H}}
+\def\P{\hat{P}_{\rm occ}}
+\def\E{\varepsilon}
+\def\vp{{v^\prime}}
+\def\q{{\bf q}}
+\def\s{\sigma}
+\def\k{{\bf k}}
+\def\qp{{\bf q^\prime}}
+\def\G{{\bf G}}
+\def\Gp{{\bf G^\prime}}
+\def\rt{\tilde{r}}
+\def\pt{\tilde{p}}
+\def\rb{{\bf r}}
+\def\rp{{\bf r^\prime}}
+\def\rpp{{\bf r^{\prime\prime}}}
+\def\rppp{{\bf r^{\prime\prime\prime}}}
+\def\mo{$\overline{1}$}
+\def\mt{$\overline{2}$}
+\def\S{\mathcal{S}}
+\def\Gs{\mathcal{G}}
+\def\v{\mathbf{v}}
+\def\symm{\left\{\mathcal{S}|\mathbf{v}\right\}}
+% -------
+\usepackage{soul}
+\usepackage{color}
+\usepackage{subfig}
+
+\definecolor{yellow}{rgb}{1,1,0}
+\definecolor{lightblue}{rgb}{0.6,0.6,0.9}
+\sethlcolor{yellow}
+
+\begin{document}
+\title{Piezo-activated Trapping and Release Mechanisms of Hydrogen at Symmetric Tilt Grain Boundaries in $\alpha$-Iron}
+\author{Henry Lambert}
+\date{\today}
+\maketitle
+
+\section{The Elastic Dipole Tensor}
+\label{sec:segregation}
+Following the treatment of Freedman et. al.\cite{freedman09} we write the free energy as:
+%
+\begin{equation}
+\label{eq:freeenergy}
+f(\epsilon_{ij}, n_{d}) = f_{0} + n_{d}E_{d} + \frac{1}{2}n^{2}_{d}E_{dd} +
+\frac{1}{2}\sum_{ijkl}C_{ijkl}\epsilon_{ij}\epsilon_{kl}−n_{d}\sum_{ij}\epsilon_{ij}G_{ij},
+\end{equation}
+%
+where $E_{d}, E_{dd}, C_{ijkl}, G_{ij}$ are the defect formation energy, 
+defect-defect interaction energy, elastic stiffness tensor, and the components of the elastic 
+dipole tensor respectively. The derivative of the free energy 
+with respect to strain then gives the stress:
+%
+\begin{equation}
+-\frac{\partial f}{\partial \epsilon_{ij}} \equiv \sigma_{ij} = - \sum_{kl}C_{ijkl}\epsilon_{kl} + n_{d}G_{ij}.
+\end{equation}
+%
+The derivative of the stress tensor with respect to the 
+concentration at a given strain then gives the components of the
+elastic dipole tensor:
+%
+\begin{equation}
+\label{eq:elasticdipole}
+\frac{\partial \sigma_{ij}}{\partial n_{d}}\Bigr|_{\epsilon} = G_{ij},
+\end{equation}
+%
+a positive diagonal element of G indicates that the presence of
+defects tends to expand the crystal along the corresponding directions.
+%
+A related quantity to Eq.~\ref{eq:elasticdipole} is the defect strain tensor.
+This requires performing a simulation under stress control. This is achievable
+by allowing the lattice vectors to relax during the course of the simulation.
+The \emph{defect strain tensor} can then be defined:
+%
+\begin{equation}
+\frac{\partial \epsilon_{ij}}{\partial n_{d}}\Bigr|_{\sigma} = \sum_{kl}S_{ijkl}G_{kl} = \Lambda_{ij},
+\end{equation}
+%
+
+\subsection{Atomic Scale Stress Tensor}
+Finally from Sutton Baluffi (pg. 294) we can define an atomic
+scale stress tensor.
+%
+\begin{equation}
+\delta E = \sum_{l}V^{l}\sum_{\alpha\beta}\delta\epsilon_{\alpha\beta}\sigma^{l}_{\alpha\beta}
+\end{equation}
+%
+\begin{equation}
+\sigma^{l}_{\alpha\beta} = \frac{1}{2V^{l}} \sum_{l'}f^{ll'}_{\alpha}r_{\beta}^{ll'}
+\end{equation}
+
+\begin{equation}
+p^{l} = - \frac{1}{3}\sum_{\alpha} \sigma^{l}_{\alpha \alpha}
+\end{equation}
+
+\section{Hydrogenating Grains}
+In order to efficiently hydrogenate grains we employ the 
+Delaunay triangulation. The Delaunay triangulation is the dual transformation
+to the better known Voronoi transformation. In Voronoi we have a lattice of
+points and we want to partition the space around each 
+point into cells which have the property
+that every point in that cell is closer to the point
+at the center of that cell than any other.
+%
+From wikipedia we have the following definition for a Delaunay
+triangulation:\footnote{\url{https://en.wikipedia.org/wiki/Delaunay_triangulation}}
+\begin{quote}
+In a Delaunay triangulation we seek, for a set P of points in a plane, a triangulation
+DT(P) such that no point in P is inside the circumcircle of any triangulation in DT(P). For
+3-dimensions the Delaunay triangulation is a triangulation DT(P) such 
+that no point in P is inside the circum-hypersphere of any simplex in DT(P).
+\end{quote}
+In a regular iron lattice octahedral position comes at the circumcenter of
+the circles represented in Fig.~\ref{fig:delaunay}. 
+%
+\begin{figure}[!tbp]
+\begin{center}
+\includegraphics[scale=0.8]{FeHDelaunay.png}
+\caption{Octahedral position viewed as the circumcenter of the Delaunay triangulation 
+of an iron lattice. Octahedral position in red, tetrahedral positions 
+blue triangles, broken lines indicate relevant circumsphere.
+\label{fig:delaunay}}
+\end{center}
+\end{figure}
+%
+We can then use octahedral sites identified in this way as a lattice, 
+and by defining a suitable basis, we can obtain all the
+tetrahedral positions in a volume slice. The Delaunay 
+triangulation at a grain boundary is also useful. For a generic
+grain boundary there is no longer a clear distinction between 
+octahedral and tetrahedral sites, but rather interstitial sites
+of varying volume. By performing a Delaunay triangulation we 
+are able to systematically identify tetrahedral
+positions in the regular lattice and rank interstitial sites at 
+the grain boundary by volume. Tesselations
+of the lattice and grain boundary with varying planar concentrations 
+of hydrogen allow us to efficiently compute the grain boundary 
+segregation energy and any possible inter-hydrogen co-operative 
+effects during hydrogen platelet formation at an interface.
+
+
+\section{Elastic Fields of Interfaces}
+
+\subsection{Frank's Formula}
+The dislocation spacing can be estimated using Frank's formula.
+%
+\begin{equation}
+d = \frac{|\mathbf{b}|}{2 \sin(\Delta\theta/2)}
+\end{equation}
+%
+\subsection{Isolated Edge Dislocations}
+The stress field $\sigma$ in the environment of an edge dislocation.
+\begin{equation}
+\label{eq:edgexx}
+\sigma_{xx} = - \frac{\mu b_{x}}{2\pi(1-\nu)}\frac{y(3x^{2}+y^{2})}{(x^{2}+y^{2})^{2}}
+\end{equation}
+
+\begin{equation}
+\label{eq:edgeyy}
+\sigma_{yy} = \frac{\mu b_{x}}{2\pi(1-\nu)}\frac{y(x^{2}-y^{2})}{(x^{2}+y^{2})^{2}}
+\end{equation}
+
+\begin{equation}
+\label{eq:edgexy}
+\sigma_{xy} = \frac{\mu b_{x}}{2\pi(1-\nu)}\frac{x(x^{2}-y^{2})}{(x^{2}+y^{2})^{2}}
+\end{equation}
+
+\begin{equation}
+\label{eq:edgezz}
+\sigma_{zz}=\nu(\tau_{xx}+\tau_{yy})=\frac{-\mu b_{x}\nu}{2\pi(1-\nu)}\frac{y}{(x^{2}+y^{2})}
+\end{equation}
+
+
+\begin{equation}
+\label{eq:edgexz}
+\sigma_{xz} = \sigma_{yz} = 0
+\end{equation}
+
+Where,for iron at room temperature, typical values for the 
+shear modulus are $\mu=52.5$~Pa and for the Poisson ratio $\nu=0.22-0.31$.\cite{rayne61}
+
+\subsection{Network of Edge Dislocations}
+For a network of edge dislocations the sum can be performed:
+%
+\begin{equation}
+\label{eq:edgexx}
+\sigma_{xx} = - \frac{\mu b_{x}}{2\pi(1-\nu)}\sum_{n=-\infty}^{\infty}\frac{(Y-n)(3X^{2}+(Y-n)^{2})}{(X^{2}+(Y-n)^{2})^{2}},
+\end{equation}
+%
+where $X=x/D$, $Y=y/D$.
+
+\begin{equation}
+\label{eq:edgexx}
+\sigma_{yy} = \frac{\mu b_{x}}{2\pi(1-\nu)}\sum_{n=-\infty}^{\infty}\frac{(Y-n)(X^{2}-(Y-n)^{2})}{(X^{2}+(Y-n)^{2})^{2}},
+\end{equation}
+%
+\begin{equation}
+\label{eq:edgexx}
+\sigma_{xy} = \frac{\mu b_{x}}{2\pi(1-\nu)}\sum_{n=-\infty}^{\infty}\frac{X(X^{2}-(Y-n)^{2})}{(X^{2}+(Y-n)^{2})^{2}},
+\end{equation}
+%
+If the Burgers vector is oriented purely along $[b_{x},0,0]$ 
+the stress tensor has the following components:\footnote{\cite{sutton95}}
+%
+\begin{align*}
+\sigma_{0}  &= \frac{\mu b_{x}}{2D(1-\nu)(\cosh(2\pi X)-\cos(2\pi Y))^{2}},\\
+\sigma_{xx} &= -\sigma_{0}\sin(2\pi Y)(\cosh(2\pi X) - \cos(2\pi Y)+2\pi X\sinh(2\pi X)),\\
+\sigma_{xy} &= \sigma_{0}2\pi X(\cosh(2\pi X)\cos(2\pi Y)-1),\\
+\sigma_{yy} &= -\sigma_{0}\sin(2\pi Y)(\cosh(2\pi X) - \cos(2\pi Y) + 2\pi X\sinh(2 \pi X)).
+\end{align*}
+%
+In the case the Burgers vector is oriented along $[0,b_{y},0]$ the dislocation network
+stress tensor has components:
+\begin{align*}
+\sigma_{xx} &= \sigma_{0}\sin(2\pi Y)(\cosh(2\pi X) - \cos(2\pi Y)+2\pi X\sinh(2\pi X)),\\
+\sigma_{xy} &= -\sigma_{0}2\pi X(\cosh(2\pi X)\cos(2\pi Y)-1),\\
+\sigma_{yy} &= \sigma_{0}\left[2\sinh(2\pi X)(\cosh(2\pi X)- \cos(2\pi Y)) - 2 \pi X(\cosh(2\pi X)\cos(2\pi Y)-1)\right]
+\end{align*}
+
+\subsection{Grain Boundary Algebra}
+Just for reference, the algebra is similar for all other components of the stress, and
+can be extended to cases where we have a traveling edge dislocation i.e. instead of
+a sum over n $n$ we have a factor like (y-vt)....
+First an auxiliary function is introduced:
+%
+\begin{equation}
+f(z) =  \pi\cot(\pi z)\frac{(Y-z)(3x^{2} + (Y-z)^{2})}{(X^{2} + (Y-z)^{2})^{2}}
+\end{equation}
+%
+This has simple poles at $z = 0, \pm 1, \pm 2,...$. It also has two 2nd 
+order poles at  $z_{1}=iX+Y$, $z_{2}=-iX+Y$. The residue at $z_{2}$ can
+be found from the following expression: 
+%
+\begin{equation}
+{\rm Res}(z_{2}) = \lim_{z\rightarrow z_{2}}\frac{d}{dz}(z-z_{2})^{2}
+\frac{\cot(\pi z)(Y-z)(3X^{2}+(Y-z)^2)}{(z-z_{1})^{2}(z-z_{2})^{2}}
+\end{equation}
+
+
+\begin{align}
+\label{eq:2ndstep}
+{\rm Res}(z_{2})&=\frac{\pi^{2}}{\sin^{2}(\pi z_{2})}\left[\frac{(Y-z_{2})(3x^{2}+(Y-z_{2})^{2})}{(z_{2}-z_{1})^{2}}\right]\\
+  &+\frac{\pi\cot(\pi z_{2})}{(z_{2}-z_{1})^{2}}\left[-(3x^{2} + (Y-z_{2})^{2})-2(Y-z_{2})^{2}\right] \\
+  &+\frac{2\pi\cot(\pi z)(Y-z_{2})(3X^{2}+(Y-z_{2})^{2})}{(z_{2} - z_{1})^{3}}
+\end{align}
+%
+The second term in Eq.~\ref{eq:2ndstep} evaluates to zero and the remaining terms can be simplified to:
+%
+\begin{equation}
+{\rm Res}(z_{2}) = \frac{\pi}{4\sin^{2}(\pi(Y-iX))}(i\pi X - \sin(2\pi(Y-iX)))
+\end{equation}
+%
+The residue at $z_{1}$ can be found in a similar manner.
+
+If we construct a set of contours as depicted in Fig.~\ref{fig:polediagram}.
+\begin{figure}[!tbp]
+\begin{center}
+\includegraphics[scale=1.0]{stresspolediagram.pdf}
+\caption{Contours to determine sum. The lines of poles from the $\cot(\pi z)$ 
+factor can be equated to the difference of the two 
+second order residues.\label{fig:polediagram}}
+\end{center}
+\end{figure}
+
+\begin{equation}
+
+\end{equation}
+
+We can write down the sum as the difference of the two second order residues.
+
+\subsection{Strain Components}
+We can then use Hooke's law for an isotropic medium to translate the
+components of the stress tensor into strain components:
+%
+\begin{align*}
+\sigma_{xx} &= 2\mu \epsilon_{xx}+\lambda e,\\
+\sigma_{yy} &= 2\mu \epsilon_{yy}+\lambda e,\\
+\sigma_{zz} &= 2\mu \epsilon_{zz}+\lambda e,\\
+\sigma_{xy} &= 2\mu \epsilon_{xy},\\
+\sigma_{yz} &= 2\mu \epsilon_{yz},\\
+\sigma_{zx} &= 2\mu \epsilon_{zx}
+\end{align*}
+%
+where $e=\epsilon_{xx}+\epsilon_{yy}+\epsilon_{zz}$ and:
+%
+\begin{equation}
+\lambda = \frac{2\nu\mu}{(1-2\nu)}
+\end{equation}
+%
+
+\subsection{H Concentration}
+To determine which symmetric tilt boundaries might be of particular importance
+for hydrogen embrittlement we consider the elastic field of a grain boundary
+interface.
+
+We focus on the contribution of the coupling between hydrogen and the strain field 
+to the free energy in Eq.~\ref{eq:freeenergy}. Given an estimate of the elastic
+dipole tensor for hydrogen and expressions for the strain field in the vicinity of a grain boundary
+we can calculate the variation in the local concentration of the hydrogen atmosphere. This model
+is effectively searching for a strain induced Cottrell atmosphere in the vicinity of 
+a grain boundary \cite{cottrell49, louat56}.
+
+In order to obtain reasonable approximations to the strain  
+field we restrict the analysis to symmetric tilt boundaries
+with geometries given in Fig.~\ref{fig:symmtilt}.
+%
+\begin{figure}[!tbp]
+\begin{center}
+\includegraphics[scale=1.0]{HGBIntegrationRegion.eps}
+\caption{Integration regions for the dislocation network at a symmetric tilt boundary for two different
+orientations of the burgers vector. a$)$ Edge dislocations with a burger's vector oriented along 
+$(b_x,0,0)$, and b$)$ Edge dislocation with a burger's vector oriented along $(0,b_y,0)$.\label{fig:symmtilt}}
+\end{center}
+\end{figure}
+%
+It is well established that hydrogen will migrate to regions of dilational strain,
+see Ref.~\cite{ramasubramaniam09} and references therein. The energetic preference
+for hydrogen migrating to regions of dilational strain can then be described:\cite{}
+%
+\begin{equation}
+\label{eq:hdistrib}
+[H] = \frac{1}{A}\int_{-D/2}^{D/2}\int_{\rm r_{1}}^{\rm r_{2}}C_{0}{\rm Exp}[{\frac{-\sum_{\rm ij}\G_{\rm ij}\epsilon_{\rm ij}(x,y;D)}{{\rm k_{B}T}}}]dxdy.
+\end{equation}
+%
+Where D is the dislocation spacing, $G_{\rm ij}$ is the elastic dipole tensor, $C_{0}$
+is the bulk concentration of hydrogen in the material, and $\epsilon_{ij}(D)$ 
+is the elastic strain tensor with its dependence on 
+the dislocation spacing made explicit, the quantity $A$ normalizes the region. 
+%
+\subsection{Twist Boundaries}
+Where the Burgers vector is oriented along the z axis we must consider screw dislocations
+at the interface. The stress fields associated with equally spaced screw dislocations
+takes the form:
+%
+\begin{align*}
+\sigma_{xz} &= -\frac{\mu b_{z}}{2D} \frac{\sin(2\pi Y)}{\cosh(2\pi X) - \cos(2\pi Y)}\\
+\sigma_{yz} &=  \frac{\mu b_{z}}{2D} \frac{\sinh(2\pi X)}{\cosh(2\pi X) - \cos(2\pi Y)}
+\end{align*}
+
+The previous formulas are derived from the stress fields of isolated 
+screw dislocations:
+%
+\begin{align*}
+\sigma_{xz} = -\frac{\mu b_{z}}{2\pi}\frac{y}{x^{2} + y^{2}}\\
+\sigma_{yz} =  \frac{\mu b_{z}}{2\pi}\frac{x}{x^{2} + y^{2}}\\
+\sigma_{xy} =  \sigma_{xx}=\sigma_{yy}=\sigma_{zz}=0
+\end{align*}
+%
+The displacement field for the isolated screw dislocation is:
+%
+\begin{equation}
+u_{z} = -\frac{b_{z}}{2\pi} \tan^{-1}(x/y),
+\end{equation}
+%
+there is no in plane displacement field. In the absence of off diagonal 
+elements of the hydrogen elastic dipole tensor there is no coupling 
+to a pure screw dislocation. In this case the only relevant effect 
+will stem from the H-dislocation core interaction.
+
+\subsection{Concentration Variation}
+Eq.~\ref{eq:hdistrib} is meant to approximate the deviation of hydrogen concentration
+from its bulk value in the immediate vicinity of a boundary.
+In order to evaluate the magnitude of the integral appearing in Eq.~\ref{eq:hdistrib}
+for different dislocation spacings we need to introduce some reasonable 
+parameters and assumptions. 
+
+We choose representative values of all the parameters entering the linear elastic model,
+i.e. $|{\rm b}|=2.45$\AA, and $\nu=0.28$. We estimate the most important contribution
+to the elastic dipole energy will come from the diagonal elements. Hence the sum in the
+exponent of Eq.~\ref{eq:hdistrib} needs only to be traced over. 
+This further simplifies evaluation of the integration since
+the trace of the matrix is invariant under rotation. We therefore 
+can estimate the concentration over the entire misorientation angle range. 
+We estimate the magnitude of the diagonal elements of the elastic dipole tensor using the EAM
+where we find a diagonal component of $G_{ii}=4.45$~eV.\footnote{\cite{ramasubramaniam09}}
+
+The result of the integration is insensitive in its shape and magnitude to reasonable variations 
+of these parameters. To perform the integration numerically we must choose cutoffs
+for the integration range along $x$. We set the bottom of the integration region at 
+the dislocation core radius, $4.5$~\AA, and extend the integration $60$~\AA into the the bulk. 
+The upper cutoff is chosen as representative of 2 times the largest dislocation 
+spacing encountered in the atomistic simulations.
+At this distance the stress field will have decayed to less than 1\% 
+of its peak value for the largest dislocation
+spacing considered.\footnote{\cite{sutton95}}
+
+Using these parameters and approximations the integration can be 
+handled numerically to produce the results in Fig.~\ref{fig:intresult}.
+%
+\begin{figure}[!tbp]
+\begin{center}
+\begin{minipage}[t]{7.5cm}
+\input{symmtiltHbx.tex}
+\end{minipage}
+\begin{minipage}[t]{7.5cm}
+\input{symmtiltHby.tex}
+\end{minipage}
+\caption{Variation in the hydrogen concentration in the vicinity of two
+symmetric tilt grain boundary dislocation networks. The left panel is for
+a dislocation network with the Burgers vector oriented purely along x (panel (a) in Fig.~\ref{fig:symmtilt})
+and for the for Burgers vector oriented along y (panel (b) in Fig.~\ref{fig:symmtilt}). 
+In the first case there is no long range strain
+away from the boundary and the hydrogen concentration increases quasi-linearly with dislocation
+spacing before leveling off at 30~\AA and beginning to decay albeit slowly. The situation for the second
+dislocation network is slightly different. In this case the boundary must be composed 
+of two distinct dislocations with opposite components of the burger's vector along y
+in order to create a boundary with no long range strain. The variation in the 
+local hydrogen concentration is a much more sharply peaked function of dislocation spacing
+and motivates a search for boundaries with a geometry of this type. \label{fig:intresult}}
+\end{center}
+\end{figure}
+
+We can observe a few features in Fig.~\ref{fig:intresult}. For the case
+of the $b_{x}$ orientation of the Burgers vector the hydrogen concentration
+increases steadily with an increase in dislocation spacing. Boundaries
+of this type have symmetric stress fields either side of the boundary plane 
+which decay into the bulk. The 'capacity' of the grain boundary to store hydrogen increases with
+the available actively stressed region (shaded blue region in Fig.~\ref{fig:symmtilt}). 
+The decay of the stress field parallel to the boundary is determined by the 
+dislocation spacing. Beyond 30~\AA the dislocations are sufficiently spaced such 
+that the tensile field has decayed and the concentration excess saturates.
+
+For the alternative orientation of the Burgers vector the results are somewhat different.
+In this case there is a compressive and tensile region on either side of the grain boundary
+interface. We are interested in the accumulation of hydrogen so we restrict the integration
+to the tensile half plane to obtain the results in Fig.\ref{fig:intresult} (b). Here there
+is a sharp initial peak in the hydrogen accumulation which decays rapidly with dislocation spacing.
+
+The magnitude of this effect is most strongly depedent on the magnitude of
+the components of the elastic dipole tensor. Hence the relevant temperature
+ranges where the effect may by most keenly observed will have a strong material
+dependence.
+
+We note a more detailed solution of Eq.~\ref{eq:hdistrib} that includes off diagonal elements of
+the elastic dipole tensor might give a more complete picture of the relative accumulation and
+angular distribution of H atoms in the immediate vicinity of a grain boundary: in particular at low 
+temperatures. However for the present purposes Eq.~\ref{eq:hdistrib}, allows us to sharpen
+our search criterion for grain boundaries of particular relevance in hydrogen embrittlement.
+In particular we are on the look out for boundaries where there is a transition in the 
+dislocation spacing of the interface for the distances where Eq.~\ref{eq:hdistrib} varies most rapidly.
+This could quickly relieve the stress field and the grain boundary would act
+as a source of hydrogen. Alternatively boundaries which, when 
+strained, might form a new minimum energy structure with a denser dislocation
+spacing could act as a hydrogen sink. The search for
+grain boundaries that demonstrate this behaviour is detailed in the next section.
+
+The present analysis neglects the contribution of the core region of the boundary, or
+the individual dislocations, to hydrogen trapping. It also 
+neglects any effects related to `self-consistency'; i.e. 
+co-operative feedback effects of hydrogen accumulation in the region
+of a grain boundary. In order to include these effects atomistic simulations 
+are now required to estimate the energy depth of the grain boundary core trapping sites.
+We will also be interested in the evolution of the core of the grain boundary dislocation
+structures under strain and in the presence of hydrogen. 
+
+\section{Grain Boundary Database}
+The minimum energy structures for the grain boundary database are
+generated according to the procedure of Rittner and Seidman \cite{rittner96}. We 
+typically investigate 300-500 structures for each grain boundary.
+The generation of a large set of grain boundaries has been performed recently in
+Ref.~\cite{tschopp12} in a study on vacancy and interstitial absorption in iron grain
+boundaries, and Ref.~\cite{wang13} where the hydrogen embrittlement of grain boundaries was
+studied. One of the results of this paper is that the duplication of this effort should be unnecessary. 
+To this end we have made the relaxed grain boundary structures for the entire misorientation angle
+range of the [001], [110], and [111] symmetric tilt grain boundaries available online. The database
+is indexed according to the orientation axis, misorientation angle, boundary plane,
+microscopic rigib body translations, and atomic cutoff criterion. The database is further divided according 
+to the interatomic potential employed i.e. EAM, tightbinding, DFT etc. 
+Using this indexing system the database can easily be extended 
+to any arbitrary grain boundary system. The framework for the archiving 
+and accessibility of this grain boundary database is general and extensible so 
+research groups with similar databases, for any material, could easily 
+upload their grain boundary datasets into the framework.
+
+\subsection{Grain Boundary Segregation Energy}
+The linear elastic solutions are no longer valid at the core of a dislocation.
+Atomistic simulations of interactions between Hydrogen and isolated screw and
+edge dislocation have been extensively studied 
+at a variety of levels of theory \cite{taketomi08, kimizuka11}.
+
+In order to treat the energetics and dynamics of hydrogen in this region 
+we require atomic scale modelling. Initially we treat the 
+Fe-H interactions using the modified EAM potential of Ramasumabramaniam et. al.
+The quantity we are interested in calculation is the segregation energy. 
+This is the difference in energy between a solute atom 
+being in the bulk and at a grain boundary site:
+%
+\begin{equation}
+\Delta e_{{\rm seg}} = \Delta E^{\rm d}_{{\rm gb}} - \Delta E^{\rm d}_{{\rm bulk}}
+\end{equation}
+%
+By iterating over the relaxed grain boundary structures we can examing the energetics
+of the hydrogen at the boundary interface and in the bulk. This screening
+process should allow us to determine which, if any, boundary acts as a particularly 
+favourable sink for hydrogen segregation.
+
+\subsection{Oriani Traps}
+Oriani provides a means for calculating the diffusivity of hydrogen in a lattice
+containing traps where there is an equilibrium between normal lattice sites and
+trap sites. The trap depth necessary to obtain this equilibrium is also calculated.   
+
+The equilibrium for traps is given by:
+\begin{equation}
+%\H \leftrightharpoons H_{x} + E_{x} %\qquad E_{x} < 0
+\end{equation}
+
+With the equilibrium constant for the above reaction given by:
+%
+\begin{equation}
+\label{eq:equilibrium}
+K = \frac{1}{\Theta_{L}}\frac{\Theta_{x}}{1-\Theta_{x}}
+\end{equation}
+
+For an infinite slab of half width ($l$), in a time period
+$10^{-2}\frac{l^{2}}{D_{L}}$, the mean concentration will be:
+%
+\begin{equation}
+\frac{C_{m} - C_{L,0}}{C_{L,0}}=-0.110.
+\end{equation}
+%
+In a small slab located at x, where $x/l=0.95$ ($C_{L}-C_{L,0}/C_{L,0}=-0.7)$.
+For equilibrium to be maintained the change in trap concentration must equal:
+%
+\begin{equation}
+\delta c_{x} = \frac{N_{x}}{N_{L}}(1-\Theta_{x})^{2}Kc_{L}
+\end{equation}
+%
+For a slice of the slab near the surface this becomes:
+%
+\begin{equation}
+\delta c_{x} = \frac{N_{x}}{N_{L}}(1-\Theta_{x})^{2}K(0.7c_{0,L})
+\end{equation}
+%
+Where $\delta c_{x}$ is number of trapped atoms per unit volume
+that must become untrapped in a time equal to 
+or less than $10^{-2}l^{2}/D_{L}$ for local equilibrium to be maintained.
+
+If $\mathcal{R}$ is the rate of escape from a trap site local equilibrium is met by:
+%
+\begin{equation}
+\label{eq:timeconst}
+\frac{\delta c_{x}}{\mathcal{R}N_{x}\Theta_{x}} \le 10^{-2}l^{2}/D_{L}
+\end{equation}
+%
+The escape rate can be modeled:
+%
+\begin{equation}
+\mathcal{R} = \nu {\rm exp}[(\Delta E_{x} - E_{a} - E')/RT]
+\end{equation}
+%
+where $\nu$ is the vibration frequency of the trapped hydrogen.
+
+\begin{equation}
+D_{L} = \lambda^{2}\nu {\rm exp}(-E_{a}/RT)
+\end{equation}
+and
+\begin{equation}
+K = {\rm exp}(-\Delta E_{x}/RT)
+\end{equation}
+
+The trap escape rate can then be modeled using the expressions for the
+equilibrium constant and the diffusibility as:
+\begin{equation}
+\mathcal{R} = K^{-1}\lambda^{-2}D_{L}e^{-E'/RT}.
+\end{equation}
+The final condition for local equilibrium becomes:
+%
+\begin{equation}
+\label{eq:localequil}
+70K(\lambda/l)^{2}e^{E'/RT}(1-\Theta_{x}) \le 1
+\end{equation}
+%
+Plugging in reasonable values for steel $\Theta_{x}=10^{-1}$,
+$\lambda \approx 2\times 10^{-10}$m and $l=10^{-3}$m and restricting the 
+model to $E'=0$ one finds that solving Eq.~\ref{eq:localequil} gives
+values of: $K\le 4 \times 10^{11}$ which at $T=300K$ means the trap depth
+would have to be $-\Delta E_{x} \le 16.0$ kcal/mol. 1 kcal=4184 J or 
+in joules $E_{x} \le 66.9 kJ/mol$.
+
+\subsection{Screening Database for Traps}
+
+\section{Dynamical Simulations}
+Of particular relevance is the work of Taketomi et. al. in Ref.\cite{taketomi11} on the competition
+between edge dislocation motion and hydrogen diffusion. 
+
+\section{Practical Calculations}
+We can now follow this procedure: 
+\begin{itemize}
+\item Compute the Macroscopic and atomic stress tensor at a 
+given hydrogen concentration using the infinitesimal strain.
+\item Repeat for a range of hydrogentandard approach of Rittner et. al. is followed. 
+Other workers in the field have shown that the typical parameter 
+space that one is required to search is on the order of %(rbt*rcut_steps)=4*8*85.
+concentrations.
+\item Plot $\sigma_{ij}$ vs. $[H]$ and obtain $G_{ij}$ from the slope of this line.
+\end{itemize}
+
+\section{Fracture Simulations}
+\subsection{Low Index Fracture Surfaces}
+We have two references for our fracture simulations. The first is \cite{moller14}.
+Our purpose for doing these DFT calculations is two fold. Firstly we 
+wish to generate a dataset of Fe-H forces that includes the electronic degrees
+of freedom.
+
+The second is the Curtin and Song model.
+We summarize Bitzek's results here:
+%
+\begin{table}[!tb]
+\begin{tabular}{c c c c c}
+\hline
+Crack Geometry      & Event     & Plane                    & K$_{G}$ & K$_{\rm emit}$ \\
+$(100)[001]$        & B         & $(100)/(1\bar{1}0)^{a}$  &  0.92   &  1.31 \\
+$(100)[011]$        & B         & $(100)$                  &  0.95   &  1.62 \\
+$(110)[001]$        & B         & $(110)$                  &  0.84   &  1.31 \\
+$(110)[1\bar{1}0]$  & B         & $(110)$                  &  0.92   &  1.15 \\
+$(111)[1\bar{1}0]$  & Twinning  & $(11\bar{2})$            &  0.99   &  1.19 \\
+$(111)[11\bar{2}]$  & D         & $(\bar{1}10)$            &  0.97   &  1.09 \\   
+\hline
+\hline
+\end{tabular}
+\caption{B: Brittle fracture, D dislocation emission, (a) crack kinks on to (110) plane.
+For the first four cases we have uniform brittle fracture
+so it's possibly not too interesting to investigate them further for embrittling
+effects. The remaining two (111) fracture geometries have some interesting properties
+and we will be interested in those. For $(111)[1\bar{1}0]$ crack system deformation 
+twins are emitted independent of the potential used.
+There is then subsequent glide of $\frac{a_{0}}{6}[111](11\bar{2})$ twinning
+dislocations on adjacent twin planes. For the $(111)[11\bar{2}]$ crack system
+$\frac{a_{0}}{2}[111](\bar{1}10)$ edge dislocations are emitted.}
+\end{table}
+
+Note Bitzek says something complicated about $(111)[1\bar{1}2]$ along the lines of
+$[1\bar{1}2]$ is not a mirror plane the so the validity of a
+linear elastic solution is doubtful due to a lack of orthotropic elasticity. So
+they don't treat it further. Curtin on the other hand doesn't seem to worry about this
+too much. I'm inclined not to worry about it either. The only effect is we won't have
+an accurate estimate of K, the embrittlement de-embrittlement phenomena will be unaffected.
+Speaking of K they define this as  $K_{G}=\sqrt{G_{G}B^{-1}}$ and perform incremental
+loading as $\delta K_{I}=0.007 MPa \sqrt{m}$. Need to ask James about equivalencies in quippy.
+Also there Gordon et. al. found $(110)[1\bar{1}0]$ to be ductile with rectangular configuration
+and $25x25x2{\rm nm}^{3}$ geometry whereas Bitzek finds it to be brittle. So need to be careful we
+justify the geometry. Probably best to setup a standard load, then outer product with
+strain rates and initial thermalized hydrogen concentrations in the vicinity and temperatures.
+That will settle us for standard low index miller index plane fracture.
+
+\subsection{Grain Boundaries}
+This is trickier and time/calculation dependent.
+
+\section{Fracture Simulations}
+\begin{figure}[!tbp]
+\begin{center}
+\includegraphics[width=\textwidth]{111frac.png}
+\caption{Fracture geometries. In panel (a) we expect to see deformation twins
+emitted, with glide along the $\frac{a_{0}}{6}[111](11\bar{2})$ system. In panel
+(b) we anticipate the emission of $\frac{a_{0}}{2}[111](\bar{1}10)$ edge dislocations.
+\label{fig:fracgeoms}}
+\end{center}
+\end{figure}
+
+\scriptsize
+\bibliographystyle{unsrtnat}
+\bibliography{refs}
+\end{document}
